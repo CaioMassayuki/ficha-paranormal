@@ -1,16 +1,19 @@
-import { IMG } from "@/constants";
-import Image from "next/image";
-import { CharacterInfo } from "../definitions";
+"use client";
 
-const a = `
+import { useState, useRef } from "react";
+import { CharacterInfo } from "../definitions";
+import Image from "next/image";
+import { updateCharacterInfo } from "../actions";
+
+const semi_circle_style = `
   w-24
   h-24
   flex
   flex-col
   items-center
   absolute
-  right-0
-  bottom-0
+  right-6
+  bottom-6
   after:w-8
   after:h-16
   after:absolute
@@ -19,9 +22,10 @@ const a = `
   after:border-l-4
   after:border-neutral-100
   after:bottom-0
-  after:-translate-x-[27px]
-  after:translate-y-[24px]
-  after:-rotate-[22.5deg]
+
+  after:-translate-x-[26px]
+  after:translate-y-[12px]
+  after:rotate-[28.5deg]
   after:translate-z-0
   before:w-8
   before:h-16
@@ -31,9 +35,9 @@ const a = `
   before:border-r-4
   before:border-neutral-100
   before:bottom-0
-  before:translate-x-[2.5px]
-  before:translate-y-[24px]
-  before:rotate-[22.5deg]
+  before:translate-x-[1.5px]
+  before:translate-y-[12px]
+  before:-rotate-[28.5deg]
   before:translate-z-0
   `;
 
@@ -42,7 +46,29 @@ export default function characterInfo({
 }: {
   profileInfo: CharacterInfo;
 }) {
-  console.log(profileInfo, 'DATA')
+  const inputFileRef = useRef<HTMLInputElement>(null);
+  const [blobUrl, setBlobUrl] = useState<string>(profileInfo.avatar);
+
+  const handleSendAvatar = async () => {
+    if (!inputFileRef.current?.files) {
+      throw new Error("No file selected");
+    }
+    const file = inputFileRef.current.files[0];
+    const response = await fetch(
+      `/api/upload?filename=${file.name}&id=${profileInfo.id}`,
+      {
+        method: "POST",
+        body: file,
+      }
+    );
+    const newBlob = (await response.json());
+    setBlobUrl(newBlob.blob.url);
+  };
+
+  const handleProfileChanges = async (profileChanges: CharacterInfo) => {
+    await updateCharacterInfo(profileChanges, profileInfo.id)
+  }
+
   return (
     <>
       <div className="border-black w-96 p-4 rounded-xl flex flex-col bg-neutral-900">
@@ -50,40 +76,53 @@ export default function characterInfo({
           <h1 className="text-2xl">Principal</h1>
         </div>
         <div className="flex flex-col items-center relative mb-4">
-          <Image
-            className="w-60 h-60 rounded-full"
-            src={IMG}
-            alt="Player character avatar"
-            height={240}
-            width={240}
+          <input
+            id="character_avatar"
+            type="file"
+            ref={inputFileRef}
+            onChange={handleSendAvatar}
+            className="hidden"
           />
-          <div className={a}>
-            <label className="absolute top-11 left-[25px] text-xs">NEX</label>
+          <label htmlFor="character_avatar">
+            <Image
+              priority
+              unoptimized
+              className="w-60 h-60 rounded-full"
+              src={blobUrl}
+              alt="Player character avatar"
+              height={240}
+              width={240}
+            />
+          </label>
+          <div className={semi_circle_style}>
+            <label className="absolute -bottom-6 left-[24px] text-xs">
+              NEX
+            </label>
             <input
-              className="absolute bottom-0 left-4 w-10 h-8 text-2xl"
+              className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-none text-center absolute bottom-[-2px] left-4 w-10 h-8 text-2xl"
               type="number"
               defaultValue={profileInfo.nex}
-              // onChange={(e) =>
-              //   handleProfileChanges({
-              //     ...profileInfo,
-              //     nex: parseInt(e.target.value),
-              //   })
-              // }
+              onChange={(e) =>
+                handleProfileChanges({
+                  ...profileInfo,
+                  nex: parseInt(e.target.value),
+                })
+              }
             />
           </div>
         </div>
-        <div className="flex flex-col">
+        <form className="flex flex-col">
           <div className="flex flex-col items-start mb-2">
             <label className="text-sm">Nome:</label>
             <input
               className="bg-gray-600 text-start w-full"
               defaultValue={profileInfo.character_name}
-              // onChange={(e) =>
-              //   handleProfileChanges({
-              //     ...profileInfo,
-              //     characterName: e.target.value,
-              //   })
-              // }
+              onChange={(e) =>
+                handleProfileChanges({
+                  ...profileInfo,
+                  character_name: e.target.value,
+                })
+              }
             />
           </div>
           <div className="flex flex-col items-start mb-2">
@@ -91,12 +130,12 @@ export default function characterInfo({
             <input
               className="bg-gray-600 text-start w-full"
               defaultValue={profileInfo.player_name}
-              // onChange={(e) =>
-              //   handleProfileChanges({
-              //     ...profileInfo,
-              //     playerName: e.target.value,
-              //   })
-              // }
+              onChange={(e) =>
+                handleProfileChanges({
+                  ...profileInfo,
+                  player_name: e.target.value,
+                })
+              }
             />
           </div>
           <div className="flex flex-col items-start mb-2">
@@ -104,12 +143,12 @@ export default function characterInfo({
             <input
               className="bg-gray-600 text-start w-full"
               defaultValue={profileInfo.character_class}
-              // onChange={(e) =>
-              //   handleProfileChanges({
-              //     ...profileInfo,
-              //     characterClass: e.target.value,
-              //   })
-              // }
+              onChange={(e) =>
+                handleProfileChanges({
+                  ...profileInfo,
+                  character_class: e.target.value,
+                })
+              }
             />
           </div>
           <div className="flex flex-col items-start mb-2">
@@ -117,15 +156,15 @@ export default function characterInfo({
             <input
               className="bg-gray-600 text-start w-full"
               defaultValue={profileInfo.character_path}
-              // onChange={(e) =>
-              //   handleProfileChanges({
-              //     ...profileInfo,
-              //     characterPath: e.target.value,
-              //   })
-              // }
+              onChange={(e) =>
+                handleProfileChanges({
+                  ...profileInfo,
+                  character_path: e.target.value,
+                })
+              }
             />
           </div>
-        </div>
+        </form>
       </div>
     </>
   );

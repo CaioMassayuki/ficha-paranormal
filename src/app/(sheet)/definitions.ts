@@ -4,6 +4,6 @@ export type CharacterInfo = {
     character_name: string,
     character_class: string,
     character_path: string,
-    nex: string,
+    nex: number,
     avatar: string,
 }
