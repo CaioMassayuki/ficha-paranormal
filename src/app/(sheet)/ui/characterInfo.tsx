@@ -1,13 +1,6 @@
 import { IMG } from "@/constants";
 import Image from "next/image";
-
-const profileInfo = {
-  nex: 1,
-  characterName: "A",
-  playerName: "A",
-  characterPath: "A",
-  characterClass: "A",
-};
+import { CharacterInfo } from "../definitions";
 
 const a = `
   w-24
@@ -44,7 +37,12 @@ const a = `
   before:translate-z-0
   `;
 
-export default function characterInfo() {
+export default function characterInfo({
+  profileInfo,
+}: {
+  profileInfo: CharacterInfo;
+}) {
+  console.log(profileInfo, 'DATA')
   return (
     <>
       <div className="border-black w-96 p-4 rounded-xl flex flex-col bg-neutral-900">
@@ -64,7 +62,7 @@ export default function characterInfo() {
             <input
               className="absolute bottom-0 left-4 w-10 h-8 text-2xl"
               type="number"
-              value={profileInfo.nex}
+              defaultValue={profileInfo.nex}
               // onChange={(e) =>
               //   handleProfileChanges({
               //     ...profileInfo,
@@ -79,7 +77,7 @@ export default function characterInfo() {
             <label className="text-sm">Nome:</label>
             <input
               className="bg-gray-600 text-start w-full"
-              value={profileInfo.characterName}
+              defaultValue={profileInfo.character_name}
               // onChange={(e) =>
               //   handleProfileChanges({
               //     ...profileInfo,
@@ -92,7 +90,7 @@ export default function characterInfo() {
             <label className="text-sm">Jogador:</label>
             <input
               className="bg-gray-600 text-start w-full"
-              value={profileInfo.playerName}
+              defaultValue={profileInfo.player_name}
               // onChange={(e) =>
               //   handleProfileChanges({
               //     ...profileInfo,
@@ -105,7 +103,7 @@ export default function characterInfo() {
             <label className="text-sm">Classe:</label>
             <input
               className="bg-gray-600 text-start w-full"
-              value={profileInfo.characterClass}
+              defaultValue={profileInfo.character_class}
               // onChange={(e) =>
               //   handleProfileChanges({
               //     ...profileInfo,
@@ -118,7 +116,7 @@ export default function characterInfo() {
             <label className="text-sm">Trilha:</label>
             <input
               className="bg-gray-600 text-start w-full"
-              value={profileInfo.characterPath}
+              defaultValue={profileInfo.character_path}
               // onChange={(e) =>
               //   handleProfileChanges({
               //     ...profileInfo,
