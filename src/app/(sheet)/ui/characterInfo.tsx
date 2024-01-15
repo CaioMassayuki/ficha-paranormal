@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { CharacterInfo } from "../definitions";
 import Image from "next/image";
 import { updateCharacterInfo } from "../actions";
+import useDebounce from "@/app/hooks/useDebounce";
+import { LONG_DEBOUNCE } from '@/constants'
 
 const semi_circle_style = `
   w-16
@@ -53,6 +55,8 @@ export default function characterInfo({
 }) {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [blobUrl, setBlobUrl] = useState<string>(profileInfo.avatar);
+  const [profileChanges, setProfileChanges] = useState<Omit<CharacterInfo, 'id' | 'avatar'>>({player_name: '', character_name: '', character_class: '', character_path: '', nex: 0})
+  const profileInput = useDebounce(profileChanges, LONG_DEBOUNCE)
 
   const handleSendAvatar = async () => {
     if (!inputFileRef.current?.files) {
@@ -70,9 +74,13 @@ export default function characterInfo({
     setBlobUrl(newBlob.blob.url);
   };
 
-  const handleProfileChanges = async (profileChanges: CharacterInfo) => {
-    await updateCharacterInfo(profileChanges, profileInfo.id);
+  const handleProfileChanges = async () => {
+    await updateCharacterInfo(profileInput, profileInfo.id);
   };
+
+  useEffect(() => {
+    handleProfileChanges()
+  }, [profileInput])
 
   return (
     <>
@@ -106,7 +114,7 @@ export default function characterInfo({
               type="number"
               defaultValue={profileInfo.nex}
               onChange={(e) =>
-                handleProfileChanges({
+                setProfileChanges({
                   ...profileInfo,
                   nex: parseInt(e.target.value),
                 })
@@ -124,7 +132,7 @@ export default function characterInfo({
               className="bg-gray-600 text-start w-full"
               defaultValue={profileInfo.character_name}
               onChange={(e) =>
-                handleProfileChanges({
+                setProfileChanges({
                   ...profileInfo,
                   character_name: e.target.value,
                 })
@@ -137,7 +145,7 @@ export default function characterInfo({
               className="bg-gray-600 text-start w-full"
               defaultValue={profileInfo.player_name}
               onChange={(e) =>
-                handleProfileChanges({
+                setProfileChanges({
                   ...profileInfo,
                   player_name: e.target.value,
                 })
@@ -150,7 +158,7 @@ export default function characterInfo({
               className="bg-gray-600 text-start w-full"
               defaultValue={profileInfo.character_class}
               onChange={(e) =>
-                handleProfileChanges({
+                setProfileChanges({
                   ...profileInfo,
                   character_class: e.target.value,
                 })
@@ -163,7 +171,7 @@ export default function characterInfo({
               className="bg-gray-600 text-start w-full"
               defaultValue={profileInfo.character_path}
               onChange={(e) =>
-                handleProfileChanges({
+                setProfileChanges({
                   ...profileInfo,
                   character_path: e.target.value,
                 })

@@ -45,3 +45,6 @@ export const expertises = [
 	'TECNOLOGIA',
 	'VONTADE',
 ]
+
+export const LONG_DEBOUNCE = 5000
+export const SHORT_DEBOUNCE = 500
