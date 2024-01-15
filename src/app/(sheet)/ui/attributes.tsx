@@ -42,7 +42,7 @@ export default function Attributes({
           <label className="text-center absolute top-9 left-[140px] w-20 h-20">
             <input
               id="AGI"
-              className="bg-transparent text-center w-12 h-10 text-4xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-none"
+              className="bg-transparent text-center w-12 h-10 text-4xl bg-none"
               type="number"
               value={attributesChanges.agi}
                 onChange={(e) =>
@@ -56,7 +56,7 @@ export default function Attributes({
           <label className="text-center absolute top-[112px] left-7 w-20 h-20">
             <input
               id="FOR"
-              className="bg-transparent text-center w-12 h-10 text-4xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-none"
+              className="bg-transparent text-center w-12 h-10 text-4xl bg-none"
               type="number"
               value={attributesChanges.for}
                 onChange={(e) =>
@@ -70,7 +70,7 @@ export default function Attributes({
           <label className="text-center absolute top-[112px] right-7 w-20 h-20">
             <input
               id="INT"
-              className="bg-transparent text-center w-12 h-10 text-4xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-none"
+              className="bg-transparent text-center w-12 h-10 text-4xl bg-none"
               type="number"
               value={attributesChanges.int}
                 onChange={(e) =>
@@ -84,7 +84,7 @@ export default function Attributes({
           <label className="text-center absolute bottom-9 left-[60px] w-20 h-20">
             <input
               id="PRE"
-              className="bg-transparent text-center w-12 h-10 text-4xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-none"
+              className="bg-transparent text-center w-12 h-10 text-4xl bg-none"
               type="number"
               value={attributesChanges.pre}
                 onChange={(e) =>
@@ -98,7 +98,7 @@ export default function Attributes({
           <label className="text-center absolute bottom-9 right-[60px] w-20 h-20">
             <input
               id="VIG"
-              className="bg-transparent text-center w-12 h-10 text-4xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-none"
+              className="bg-transparent text-center w-12 h-10 text-4xl bg-none"
               type="number"
               value={attributesChanges.vig}
                 onChange={(e) =>
