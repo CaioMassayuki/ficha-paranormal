@@ -2,7 +2,7 @@
 
 import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
-import { CharacterInfo } from "./definitions";
+import { CharacterAttributes, CharacterProfile } from "./definitions";
 
 // export async function createInvoice(formData: FormData) {
 //     const validatedFields = {
@@ -36,21 +36,46 @@ export async function uploadAvatar(imageUrl: string, id: string) {
   }
 }
 
-export async function updateCharacterInfo(newCharacterInfo: Omit<CharacterInfo, 'id' | 'avatar'>, id: string) {
-    try {
-      await sql`
+export async function updateProfileInfo(
+  newProfileInfo: Omit<CharacterProfile, "avatar">,
+  id: string
+) {
+  try {
+    await sql`
           UPDATE sheet
           SET 
-            player_name = ${newCharacterInfo.player_name},
-            character_name = ${newCharacterInfo.character_name},
-            character_class = ${newCharacterInfo.character_class},
-            character_path = ${newCharacterInfo.character_path},
-            nex = ${newCharacterInfo.nex}
+            player_name = ${newProfileInfo.playerName},
+            character_name = ${newProfileInfo.characterName},
+            character_class = ${newProfileInfo.characterClass},
+            character_path = ${newProfileInfo.characterPath},
+            nex = ${newProfileInfo.nex}
           WHERE id = ${id}`;
-    } catch (e) {
-        console.log(e)
-      return {
-        message: "Database Error: Failed to update Avatar.",
-      };
-    }
+  } catch (e) {
+    console.log(e);
+    return {
+      message: "Database Error: Failed to update Profile Info.",
+    };
   }
+}
+
+export async function updateAttributesInfo(
+  newAttributesInfo: CharacterAttributes,
+  id: string
+) {
+  try {
+    await sql`
+          UPDATE sheet
+          SET 
+            attribute_agi = ${newAttributesInfo.agi},
+            attribute_for = ${newAttributesInfo.for},
+            attribute_int = ${newAttributesInfo.int},
+            attribute_pre = ${newAttributesInfo.pre},
+            attribute_vig = ${newAttributesInfo.vig}
+          WHERE id = ${id}`;
+  } catch (e) {
+    console.log(e);
+    return {
+      message: "Database Error: Failed to update Attributes Info.",
+    };
+  }
+}
