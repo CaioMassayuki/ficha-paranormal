@@ -2,7 +2,12 @@
 
 import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
-import { CharacterAttributes, CharacterProfile } from "./definitions";
+import {
+  CharacterAttributes,
+  CharacterProfile,
+  StatusExtraValues,
+  StatusValues,
+} from "./definitions";
 
 // export async function createInvoice(formData: FormData) {
 //     const validatedFields = {
@@ -71,6 +76,87 @@ export async function updateAttributesInfo(
             attribute_int = ${newAttributesInfo.int},
             attribute_pre = ${newAttributesInfo.pre},
             attribute_vig = ${newAttributesInfo.vig}
+          WHERE id = ${id}`;
+  } catch (e) {
+    console.log(e);
+    return {
+      message: "Database Error: Failed to update Attributes Info.",
+    };
+  }
+}
+
+export async function updateHealthStatusInfo(
+  newHealthStatus: StatusValues,
+  id: string
+) {
+  try {
+    await sql`
+          UPDATE sheet
+          SET 
+            current_health = ${newHealthStatus.currentValue},
+            max_health = ${newHealthStatus.maxValue},
+            extra_health = ${newHealthStatus.extra}
+          WHERE id = ${id}`;
+  } catch (e) {
+    console.log(e);
+    return {
+      message: "Database Error: Failed to update Health Status.",
+    };
+  }
+}
+
+export async function updateSanityStatusInfo(
+  newSanityStatus: StatusValues,
+  id: string
+) {
+  try {
+    await sql`
+          UPDATE sheet
+          SET 
+            current_sanity = ${newSanityStatus.currentValue},
+            max_sanity = ${newSanityStatus.maxValue},
+            extra_sanity = ${newSanityStatus.extra}
+          WHERE id = ${id}`;
+  } catch (e) {
+    console.log(e);
+    return {
+      message: "Database Error: Failed to update Sanity Status.",
+    };
+  }
+}
+
+export async function updateEffortStatusInfo(
+  newEffortStatus: StatusValues,
+  id: string
+) {
+  try {
+    await sql`
+          UPDATE sheet
+          SET 
+            current_effort = ${newEffortStatus.currentValue},
+            max_effort = ${newEffortStatus.maxValue},
+            extra_effort = ${newEffortStatus.extra}
+          WHERE id = ${id}`;
+  } catch (e) {
+    console.log(e);
+    return {
+      message: "Database Error: Failed to update Effort Status.",
+    };
+  }
+}
+
+export async function updateStatusExtraInfo(
+  newStatusExtraValues: StatusExtraValues,
+  id: string
+) {
+  try {
+    await sql`
+          UPDATE sheet
+          SET 
+            defense = ${newStatusExtraValues.defense},
+            speed = ${newStatusExtraValues.speed},
+            block = ${newStatusExtraValues.block},
+            dodge = ${newStatusExtraValues.dodge}
           WHERE id = ${id}`;
   } catch (e) {
     console.log(e);

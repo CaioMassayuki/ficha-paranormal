@@ -111,7 +111,7 @@ export default function characterInfo({
           <div className={semi_circle_style}>
             <input
               id="nex_input"
-              className="bg-transparent z-10 text-center bottom-[-2px] left-4 w-10 h-8 text-2xl"
+              className="z-10 text-center bottom-[-2px] left-4 w-10 h-8 text-2xl"
               type="number"
               value={profileChanges.nex || ''}
               onChange={(e) =>
