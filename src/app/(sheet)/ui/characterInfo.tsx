@@ -1,19 +1,24 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { CharacterInfo } from "../definitions";
+import { useState, useRef, useEffect } from "react";
+import { CharacterProfile } from "../definitions";
 import Image from "next/image";
-import { updateCharacterInfo } from "../actions";
+import { updateProfileInfo } from "../actions";
+import { LONG_DEBOUNCE } from "@/constants";
+import { useDebounceCallback } from "@/app/hooks/useDebounceCallback";
 
 const semi_circle_style = `
-  w-24
-  h-24
+  w-16
+  h-16
+  absolute
+  right-12
+  bottom-4
+  rounded-full
   flex
   flex-col
   items-center
-  absolute
-  right-6
-  bottom-6
+  justify-center
+  bg-black
   after:w-8
   after:h-16
   after:absolute
@@ -22,19 +27,21 @@ const semi_circle_style = `
   after:border-l-4
   after:border-neutral-100
   after:bottom-0
-
   after:-translate-x-[26px]
   after:translate-y-[12px]
   after:rotate-[28.5deg]
   after:translate-z-0
+  after:bottom-5
+  after:right-1
   before:w-8
   before:h-16
   before:absolute
   before:rounded-r-full
   before:border-y-4
   before:border-r-4
+  before:bottom-5
+  before:right-1
   before:border-neutral-100
-  before:bottom-0
   before:translate-x-[1.5px]
   before:translate-y-[12px]
   before:-rotate-[28.5deg]
@@ -42,36 +49,43 @@ const semi_circle_style = `
   `;
 
 export default function characterInfo({
-  profileInfo,
+  id,
+  profileInfo
 }: {
-  profileInfo: CharacterInfo;
+  id: string;
+  profileInfo: CharacterProfile;
 }) {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [blobUrl, setBlobUrl] = useState<string>(profileInfo.avatar);
+  const [profileChanges, setProfileChanges] = useState<Omit<CharacterProfile, "avatar">>(profileInfo);
 
   const handleSendAvatar = async () => {
     if (!inputFileRef.current?.files) {
       throw new Error("No file selected");
     }
     const file = inputFileRef.current.files[0];
-    const response = await fetch(
-      `/api/upload?filename=${file.name}&id=${profileInfo.id}`,
-      {
-        method: "POST",
-        body: file,
-      }
-    );
-    const newBlob = (await response.json());
+    const response = await fetch(`/api/upload?filename=${file.name}&id=${id}`, {
+      method: "POST",
+      body: file,
+    });
+    const newBlob = await response.json();
     setBlobUrl(newBlob.blob.url);
   };
 
-  const handleProfileChanges = async (profileChanges: CharacterInfo) => {
-    await updateCharacterInfo(profileChanges, profileInfo.id)
-  }
+  const handleProfileChanges = useDebounceCallback(
+    async (profileChanges: Omit<CharacterProfile, "avatar">) => {
+      await updateProfileInfo(profileChanges, id);
+    },
+    LONG_DEBOUNCE
+  );
+
+  useEffect(() => {
+    handleProfileChanges(profileChanges);
+  }, [profileChanges]);
 
   return (
     <>
-      <div className="border-black w-96 p-4 rounded-xl flex flex-col bg-neutral-900">
+      <div className="w-96 p-4 rounded-t-xl flex flex-col bg-neutral-900">
         <div className="flex justify-center mb-4">
           <h1 className="text-2xl">Principal</h1>
         </div>
@@ -95,20 +109,21 @@ export default function characterInfo({
             />
           </label>
           <div className={semi_circle_style}>
-            <label className="absolute -bottom-6 left-[24px] text-xs">
-              NEX
-            </label>
             <input
-              className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-none text-center absolute bottom-[-2px] left-4 w-10 h-8 text-2xl"
+              id="nex_input"
+              className="bg-transparent z-10 text-center bottom-[-2px] left-4 w-10 h-8 text-2xl"
               type="number"
-              defaultValue={profileInfo.nex}
+              value={profileChanges.nex || ''}
               onChange={(e) =>
-                handleProfileChanges({
-                  ...profileInfo,
+                setProfileChanges({
+                  ...profileChanges,
                   nex: parseInt(e.target.value),
                 })
               }
             />
+            <label htmlFor="nex_input" className="absolute -bottom-1 text-xs">
+              NEX
+            </label>
           </div>
         </div>
         <form className="flex flex-col">
@@ -116,11 +131,11 @@ export default function characterInfo({
             <label className="text-sm">Nome:</label>
             <input
               className="bg-gray-600 text-start w-full"
-              defaultValue={profileInfo.character_name}
+              value={profileChanges.characterName || ''}
               onChange={(e) =>
-                handleProfileChanges({
-                  ...profileInfo,
-                  character_name: e.target.value,
+                setProfileChanges({
+                  ...profileChanges,
+                  characterName: e.target.value,
                 })
               }
             />
@@ -129,11 +144,11 @@ export default function characterInfo({
             <label className="text-sm">Jogador:</label>
             <input
               className="bg-gray-600 text-start w-full"
-              defaultValue={profileInfo.player_name}
+              value={profileChanges.playerName || ''}
               onChange={(e) =>
-                handleProfileChanges({
-                  ...profileInfo,
-                  player_name: e.target.value,
+                setProfileChanges({
+                  ...profileChanges,
+                  playerName: e.target.value,
                 })
               }
             />
@@ -142,11 +157,11 @@ export default function characterInfo({
             <label className="text-sm">Classe:</label>
             <input
               className="bg-gray-600 text-start w-full"
-              defaultValue={profileInfo.character_class}
+              value={profileChanges.characterClass || ''}
               onChange={(e) =>
-                handleProfileChanges({
-                  ...profileInfo,
-                  character_class: e.target.value,
+                setProfileChanges({
+                  ...profileChanges,
+                  characterClass: e.target.value,
                 })
               }
             />
@@ -155,11 +170,11 @@ export default function characterInfo({
             <label className="text-sm">Trilha:</label>
             <input
               className="bg-gray-600 text-start w-full"
-              defaultValue={profileInfo.character_path}
+              value={profileChanges.characterPath || ''}
               onChange={(e) =>
-                handleProfileChanges({
-                  ...profileInfo,
-                  character_path: e.target.value,
+                setProfileChanges({
+                  ...profileChanges,
+                  characterPath: e.target.value,
                 })
               }
             />
