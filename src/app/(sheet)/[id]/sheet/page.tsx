@@ -1,7 +1,7 @@
 import CharacterInfo from "../../ui/characterInfo";
 import { fetchSheetData } from "../../data";
 import Attributes from "../../ui/attributes";
-import Status from "../../ui/status";
+import Status from "../../ui/status/status";
 
 export default async function Sheet({ params }: { params: { id: string } }) {
   const data = await fetchSheetData(params.id);
@@ -11,7 +11,7 @@ export default async function Sheet({ params }: { params: { id: string } }) {
         <CharacterInfo id={data.id} profileInfo={data.profile} />
         <Attributes id={data.id} attributes={data.attributes}/>
       </div>
-      <Status />
+      <Status id={data.id} statusInfo={data.status} extraStatus={data.extraStatus}/>
     </>
   );
 }

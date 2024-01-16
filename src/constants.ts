@@ -47,4 +47,5 @@ export const EXPERTISES = [
 ]
 
 export const LONG_DEBOUNCE = 5000
+export const MEDIUM_DEBOUNCE = 1000
 export const SHORT_DEBOUNCE = 500
