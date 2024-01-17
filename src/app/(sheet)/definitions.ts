@@ -39,7 +39,6 @@ export type CharacterInfoDoc = {
   attribute_int: number;
   attribute_pre: number;
   attribute_vig: number;
-
   current_health: number;
   max_health: number;
   extra_health: number;
