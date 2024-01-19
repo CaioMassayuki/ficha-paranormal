@@ -10,15 +10,13 @@ import { LONG_DEBOUNCE, MEDIUM_DEBOUNCE } from "@/constants";
 
 export default function Status({
   statusInfo,
-  extraStatus,
   id,
 }: {
   id: string;
   statusInfo: StatusInfo;
-  extraStatus: StatusExtraValues;
 }) {
   const [newExtraStatus, setNewExtraStatus] =
-    useState<StatusExtraValues>(extraStatus);
+    useState<StatusExtraValues>(statusInfo.extraStatus);
 
   const createDebouncedStatusChangeHandler = (handler: Function) => {
     return useDebounceCallback (async (newStatusValues: StatusValues) => {
