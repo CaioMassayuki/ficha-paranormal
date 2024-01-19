@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 export type CharacterProfile = {
   playerName: string;
   characterName: string;
@@ -15,15 +17,15 @@ export type CharacterAttributes = {
 };
 
 export type CharacterInfo = {
-  id: string;
+  _id: string;
   profile: CharacterProfile;
   attributes: CharacterAttributes;
   status: {
     health: StatusValues;
     sanity: StatusValues;
     effort: StatusValues;
+    extraStatus: StatusExtraValues;
   };
-  extraStatus: StatusExtraValues;
 };
 
 export type CharacterInfoDoc = {
@@ -66,6 +68,7 @@ export type StatusInfo = {
   health: StatusValues;
   sanity: StatusValues;
   effort: StatusValues;
+  extraStatus: StatusExtraValues;
 };
 
 export type StatusExtraValues = {
