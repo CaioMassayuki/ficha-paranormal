@@ -5,7 +5,12 @@ import ColoredNumberStatus from "./coloredNumberStatus";
 import { StatusExtraValues, StatusInfo, StatusValues } from "../../definitions";
 import { useEffect, useState } from "react";
 import { useDebounceCallback } from "@/app/hooks/useDebounceCallback";
-import { updateEffortStatusInfo, updateHealthStatusInfo, updateSanityStatusInfo, updateStatusExtraInfo } from "../../actions";
+import {
+  updateEffortStatusInfo,
+  updateHealthStatusInfo,
+  updateSanityStatusInfo,
+  updateStatusExtraInfo,
+} from "../../actions";
 import { LONG_DEBOUNCE, MEDIUM_DEBOUNCE } from "@/constants";
 
 export default function Status({
@@ -15,14 +20,15 @@ export default function Status({
   id: string;
   statusInfo: StatusInfo;
 }) {
-  const [newExtraStatus, setNewExtraStatus] =
-    useState<StatusExtraValues>(statusInfo.extraStatus);
+  const [newExtraStatus, setNewExtraStatus] = useState<StatusExtraValues>(
+    statusInfo.extraStatus || { defense: 0, block: 0, dodge: 0, speed: 0 }
+  );
 
   const createDebouncedStatusChangeHandler = (handler: Function) => {
-    return useDebounceCallback (async (newStatusValues: StatusValues) => {
-      await handler(newStatusValues, id)
-    }, MEDIUM_DEBOUNCE)
-  }
+    return useDebounceCallback(async (newStatusValues: StatusValues) => {
+      await handler(newStatusValues, id);
+    }, MEDIUM_DEBOUNCE);
+  };
 
   const handleExtraStatusChange = useDebounceCallback(
     async (newExtraStatus: StatusExtraValues) => {
@@ -47,19 +53,25 @@ export default function Status({
               title="Vida"
               color="red"
               value={statusInfo.health}
-              handleStatusChange={createDebouncedStatusChangeHandler(updateHealthStatusInfo)}
+              handleStatusChange={createDebouncedStatusChangeHandler(
+                updateHealthStatusInfo
+              )}
             />
             <ColoredNumberStatus
               title="Sanidade"
               color="blue"
               value={statusInfo.sanity}
-              handleStatusChange={createDebouncedStatusChangeHandler(updateSanityStatusInfo)}
+              handleStatusChange={createDebouncedStatusChangeHandler(
+                updateSanityStatusInfo
+              )}
             />
             <ColoredNumberStatus
               title="Pontos de Esforço"
               color="yellow"
               value={statusInfo.effort}
-              handleStatusChange={createDebouncedStatusChangeHandler(updateEffortStatusInfo)}
+              handleStatusChange={createDebouncedStatusChangeHandler(
+                updateEffortStatusInfo
+              )}
             />
           </div>
           <div className="my-4 flex justify-around items-center">

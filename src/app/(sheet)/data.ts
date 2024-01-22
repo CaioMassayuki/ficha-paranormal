@@ -15,6 +15,7 @@ export async function mongoFetchSheetData(
       _id: new ObjectId(id),
     });
     if(response) {
+      console.log(response)
       return { ...response, _id: response._id.toString() };
     }
     return null
