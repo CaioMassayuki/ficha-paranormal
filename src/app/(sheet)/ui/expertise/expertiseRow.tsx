@@ -1,8 +1,11 @@
 "use client";
+import { useState } from "react";
 import { ATTRIBUTES_ENUM, TRAINING_ENUM } from "@/constants";
 import { GRID_STYLE } from "./expertiseInfo";
-import D20 from '@/../public/d20.svg'
+import D20 from "@/../public/d20.svg";
 import Image from "next/image";
+import { useSheetContext } from "../../sheetContext";
+import { Expertise } from "../../definitions";
 
 const ATTRIBUTE_SELECT_CLASS = `
 flex
@@ -45,28 +48,33 @@ after:right-[-10px]
 hover:cursor-pointer
 `;
 
-export default function ExpertiseRow({ expertise }) {
+export default function ExpertiseRow({ expertise }: { expertise: Expertise }) {
+  const { attributes } = useSheetContext();
+
+  const [expertiseChanges, setExpertiseChanges] =
+    useState<Expertise>(expertise);
+
   return (
     <tr className={`h-9 ${GRID_STYLE}`}>
       <td className="flex items-center ">
         <button className="rounded-sm size-6 mr-4 flex justify-center items-center">
-          <Image src={D20} width={24} height={24} alt='20 sided dice'/>
+          <Image src={D20} width={24} height={24} alt="20 sided dice" />
         </button>
-        <p>{expertise.name}</p>
+        <p>{expertiseChanges.name}</p>
       </td>
       <td className="flex items-center justify-around">
         <label
-          htmlFor={`${expertise.name}_attribute_select`}
+          htmlFor={`${expertiseChanges.name}_attribute_select`}
           className={ATTRIBUTE_SELECT_CLASS}
         >
           <select
-            id={`${expertise.name}_attribute_select`}
-            value={expertise.dice}
+            id={`${expertiseChanges.name}_attribute_select`}
+            value={expertiseChanges.dice}
             className="absolute left-0 text-start z-10 pl-[2px] hover:outline hover:outline-2 hover:rounded-sm hover:outline-neutral-50/50"
             onChange={(e) =>
-              handleExpertiseChange({
-                ...expertise,
-                dice: parseInt(e.target.value),
+              setExpertiseChanges({
+                ...expertiseChanges,
+                dice: e.target.value,
               })
             }
           >
@@ -88,30 +96,33 @@ export default function ExpertiseRow({ expertise }) {
           </select>
         </label>
         <p className="text-center whitespace-nowrap overflow-hidden overflow-ellipsis">
-          {expertise.diceValue}
+          {attributes[expertiseChanges.dice]}
         </p>
       </td>
       <td className="flex items-center before:content-['|']">
         <p className="mx-2 text-center whitespace-nowrap overflow-hidden overflow-ellipsis">
-          {expertise.exp}
+          {expertiseChanges.exp}
         </p>
         <div className={TRAINING_SELECT_CLASS}>
           <select
             className="absolute left-3 text-start z-10 pl-[2px] hover:outline hover:outline-2 hover:rounded-sm hover:outline-neutral-50/50"
             onChange={(e) =>
-              handleExpertiseChange({ ...expertise, exp: e.target.value })
+              setExpertiseChanges({
+                ...expertiseChanges,
+                exp: parseInt(e.target.value),
+              })
             }
           >
-            <option className="text-black" value={expertise.NENHUM}>
+            <option className="text-black" value={TRAINING_ENUM.NENHUM}>
               Iniciante
             </option>
-            <option className="text-black" value={expertise.TREINADO}>
+            <option className="text-black" value={TRAINING_ENUM.TREINADO}>
               Treinado
             </option>
-            <option className="text-black" value={expertise.VETERANO}>
+            <option className="text-black" value={TRAINING_ENUM.VETERANO}>
               Veterano
             </option>
-            <option className="text-black" value={expertise.EXPERT}>
+            <option className="text-black" value={TRAINING_ENUM.EXPERT}>
               Expert
             </option>
           </select>
@@ -121,9 +132,12 @@ export default function ExpertiseRow({ expertise }) {
         <input
           className="text-center whitespace-nowrap overflow-hidden overflow-ellipsis"
           type="number"
-          value={expertise.bonus}
+          value={expertiseChanges.bonus}
           onChange={(e) =>
-            handleExpertiseChange({ ...expertise, bonus: e.target.value })
+            setExpertiseChanges({
+              ...expertiseChanges,
+              bonus: parseInt(e.target.value),
+            })
           }
         />
       </td>

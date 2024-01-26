@@ -77,3 +77,12 @@ export type StatusExtraValues = {
   block: number;
   dodge: number;
 };
+
+export type Expertise = {
+  name: string;
+  dice: string;
+  exp: number;
+  bonus: number;
+};
+
+export type Expertises = Expertise[];
