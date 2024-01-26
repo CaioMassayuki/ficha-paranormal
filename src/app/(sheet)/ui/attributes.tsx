@@ -7,27 +7,31 @@ import { CharacterAttributes } from "../definitions";
 import { useEffect, useState } from "react";
 import { useDebounceCallback } from "@/app/hooks/useDebounceCallback";
 import { updateAttributesInfo } from "../actions";
+import { useSheetContext } from "../sheetContext";
 
 export default function Attributes({
   id,
-  attributes,
+  attributesData,
 }: {
   id: string;
-  attributes: CharacterAttributes;
+  attributesData: CharacterAttributes;
 }) {
   const [attributesChanges, setAttributesChanges] =
-    useState<CharacterAttributes>(attributes);
+    useState<CharacterAttributes>(attributesData);
 
-    const handleAttributeChanges = useDebounceCallback(
-      async (profileChanges: CharacterAttributes) => {
-        await updateAttributesInfo(profileChanges, id);
-      },
-      LONG_DEBOUNCE
-    );
-  
-    useEffect(() => {
-      handleAttributeChanges(attributesChanges);
-    }, [attributesChanges]);
+  const { setAttributes } = useSheetContext();
+
+  const handleAttributeChanges = useDebounceCallback(
+    async (profileChanges: CharacterAttributes) => {
+      await updateAttributesInfo(profileChanges, id);
+    },
+    LONG_DEBOUNCE
+  );
+
+  useEffect(() => {
+    setAttributes(attributesChanges);
+    handleAttributeChanges(attributesChanges);
+  }, [attributesChanges]);
 
   return (
     <>
@@ -45,12 +49,12 @@ export default function Attributes({
               className="text-center w-12 h-10 text-4xl bg-none"
               type="number"
               value={attributesChanges.agi}
-                onChange={(e) =>
-                  setAttributesChanges({
-                    ...attributesChanges,
-                    agi: parseInt(e.target.value),
-                  })
-                }
+              onChange={(e) =>
+                setAttributesChanges({
+                  ...attributesChanges,
+                  agi: parseInt(e.target.value),
+                })
+              }
             />
           </label>
           <label className="text-center absolute top-[112px] left-7 w-20 h-20">
@@ -59,12 +63,12 @@ export default function Attributes({
               className="text-center w-12 h-10 text-4xl bg-none"
               type="number"
               value={attributesChanges.for}
-                onChange={(e) =>
-                  setAttributesChanges({
-                    ...attributesChanges,
-                    for: parseInt(e.target.value),
-                  })
-                }
+              onChange={(e) =>
+                setAttributesChanges({
+                  ...attributesChanges,
+                  for: parseInt(e.target.value),
+                })
+              }
             />
           </label>
           <label className="text-center absolute top-[112px] right-7 w-20 h-20">
@@ -73,12 +77,12 @@ export default function Attributes({
               className="text-center w-12 h-10 text-4xl bg-none"
               type="number"
               value={attributesChanges.int}
-                onChange={(e) =>
-                  setAttributesChanges({
-                    ...attributesChanges,
-                    int: parseInt(e.target.value),
-                  })
-                }
+              onChange={(e) =>
+                setAttributesChanges({
+                  ...attributesChanges,
+                  int: parseInt(e.target.value),
+                })
+              }
             />
           </label>
           <label className="text-center absolute bottom-9 left-[60px] w-20 h-20">
@@ -87,12 +91,12 @@ export default function Attributes({
               className="text-center w-12 h-10 text-4xl bg-none"
               type="number"
               value={attributesChanges.pre}
-                onChange={(e) =>
-                  setAttributesChanges({
-                    ...attributesChanges,
-                    pre: parseInt(e.target.value),
-                  })
-                }
+              onChange={(e) =>
+                setAttributesChanges({
+                  ...attributesChanges,
+                  pre: parseInt(e.target.value),
+                })
+              }
             />
           </label>
           <label className="text-center absolute bottom-9 right-[60px] w-20 h-20">
@@ -101,12 +105,12 @@ export default function Attributes({
               className="text-center w-12 h-10 text-4xl bg-none"
               type="number"
               value={attributesChanges.vig}
-                onChange={(e) =>
-                  setAttributesChanges({
-                    ...attributesChanges,
-                    vig: parseInt(e.target.value),
-                  })
-                }
+              onChange={(e) =>
+                setAttributesChanges({
+                  ...attributesChanges,
+                  vig: parseInt(e.target.value),
+                })
+              }
             />
           </label>
         </div>

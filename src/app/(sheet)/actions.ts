@@ -15,7 +15,7 @@ export async function uploadAvatar(imageUrl: string, id: string) {
     const collection = db.collection("sheet");
     await collection.updateOne(
       { _id: new ObjectId(id) },
-      { $set: { profile: { avatar: imageUrl } } }
+      { $set: { 'profile.avatar': imageUrl } }
     );
   } catch (e) {
     return {
@@ -52,7 +52,7 @@ export async function updateHealthStatusInfo(
     const collection = db.collection("sheet");
     await collection.updateOne(
       { _id: new ObjectId(id) },
-      { $set: { status: { health: newHealthStatus } } }
+      { $set: { "status.health": newHealthStatus } }
     );
   } catch (e) {
     console.log(e);
@@ -71,7 +71,7 @@ export async function updateSanityStatusInfo(
     const collection = db.collection("sheet");
     await collection.updateOne(
       { _id: new ObjectId(id) },
-      { $set: { status: { sanity: newSanityStatus } } }
+      { $set: { "status.sanity": newSanityStatus } }
     );
   } catch (e) {
     console.log(e);
@@ -90,7 +90,7 @@ export async function updateEffortStatusInfo(
     const collection = db.collection("sheet");
     await collection.updateOne(
       { _id: new ObjectId(id) },
-      { $set: { status: { effort: newEffortStatus } } }
+      { $set: { "status.effort": newEffortStatus } }
     );
   } catch (e) {
     console.log(e);
@@ -109,7 +109,7 @@ export async function updateStatusExtraInfo(
     const collection = db.collection("sheet");
     await collection.updateOne(
       { _id: new ObjectId(id) },
-      { $set: { status: { extraStatus: newStatusExtraValues } } }
+      { $set: { "status.extraStatus": newStatusExtraValues } }
     );
   } catch (e) {
     console.log(e);
