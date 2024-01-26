@@ -5,7 +5,7 @@ import { GRID_STYLE } from "./expertiseInfo";
 import D20 from "@/../public/d20.svg";
 import Image from "next/image";
 import { useSheetContext } from "../../sheetContext";
-import { Expertise } from "../../definitions";
+import { CharacterAttributes, Expertise } from "../../definitions";
 
 const ATTRIBUTE_SELECT_CLASS = `
 flex
@@ -50,6 +50,10 @@ hover:cursor-pointer
 
 export default function ExpertiseRow({ expertise }: { expertise: Expertise }) {
   const { attributes } = useSheetContext();
+
+  const isValidKey = (key: string): key is keyof CharacterAttributes => {
+    return key in attributes;
+  };
 
   const [expertiseChanges, setExpertiseChanges] =
     useState<Expertise>(expertise);
@@ -96,12 +100,14 @@ export default function ExpertiseRow({ expertise }: { expertise: Expertise }) {
           </select>
         </label>
         <p className="text-center whitespace-nowrap overflow-hidden overflow-ellipsis">
-          {attributes[expertiseChanges.dice]}
+          {isValidKey(expertiseChanges.dice)
+            ? attributes[expertiseChanges.dice]
+            : 0}
         </p>
       </td>
       <td className="flex items-center before:content-['|']">
         <p className="mx-2 text-center whitespace-nowrap overflow-hidden overflow-ellipsis">
-          {expertiseChanges.exp}
+          {expertise.exp}
         </p>
         <div className={TRAINING_SELECT_CLASS}>
           <select
